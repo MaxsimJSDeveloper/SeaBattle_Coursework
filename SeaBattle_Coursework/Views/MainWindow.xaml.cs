@@ -16,9 +16,14 @@ namespace SeaBattle_Coursework
     /// </summary>
     public partial class MainWindow : Window
     {
+        MediaPlayer bgMusic = new MediaPlayer();
+
         public MainWindow()
         {
             InitializeComponent();
+
+            bgMusic.Open(new Uri("Assets/Sounds/start_menu_music.mp3", UriKind.Relative));
+            bgMusic.Play();
         }
     }
 }
