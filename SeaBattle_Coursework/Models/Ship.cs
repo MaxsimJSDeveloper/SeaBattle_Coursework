@@ -1,23 +1,27 @@
-﻿namespace SeaBattle_Coursework.Models
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace SeaBattle_Coursework.Models
 {
     public class Ship
     {
-        public int Size { get; private set; }
-        public List<Cell> OccupiedCells { get; private set; }
+        public int Size { get; }
+        public int Health { get; private set; }
+        public bool IsSunk => Health <= 0;
+
+        public List<Cell> Cells { get; } = new List<Cell>();
 
         public Ship(int size)
         {
             Size = size;
-            OccupiedCells = new List<Cell>();
+            Health = size;
         }
-        public bool IsSunk()
+        public void Hit()
         {
-            foreach (var cell in OccupiedCells)
+            if (Health > 0)
             {
-                if (cell.State != CellState.Hit)
-                    return false;
+                Health--;
             }
-            return true;
         }
     }
 }

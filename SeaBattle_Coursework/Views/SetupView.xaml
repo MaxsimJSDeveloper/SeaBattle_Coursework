@@ -9,29 +9,48 @@
         <vm:GameViewModel />
     </UserControl.DataContext>
 
-    <Grid>
-        <!-- Ділимо екран на 2 рядки (дошки і кнопка) та 2 колонки (гравець 1 і 2) -->
+    <Grid ButtonBase.Click="Grid_CellClicked"
+          Button.MouseEnter="Grid_MouseEnter" 
+      Button.MouseLeave="Grid_MouseLeave"
+      MouseRightButtonDown="Grid_RightClick">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <!-- Верхня частина для дощок -->
             <RowDefinition Height="80" />
-            <!-- Нижня для кнопки -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <!-- Нова колонка для Арсеналу -->
             <ColumnDefinition Width="*" />
+            <!-- Дошка гравця 1 -->
             <ColumnDefinition Width="*" />
+            <!-- Дошка гравця 2 -->
         </Grid.ColumnDefinitions>
 
-        <!-- Дошка Гравця 1 -->
-        <local:BoardView DataContext="{Binding Player1Board}" Grid.Row="0" Grid.Column="0" Margin="20" />
+        <!-- ПАНЕЛЬ КОРАБЛІВ (Арсенал) -->
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="20" Background="#F0F8FF">
+            <TextBlock Text="ТВІЙ ФЛОТ" FontSize="20" FontWeight="Bold" Margin="10,10,0,10" Foreground="DarkBlue"/>
 
-        <!-- Дошка Гравця 2 -->
-        <local:BoardView DataContext="{Binding Player2Board}" Grid.Row="0" Grid.Column="1" Margin="20" />
+            <!-- Радіокнопки згруповані через GroupName, щоб можна було обрати лише одну -->
+            <RadioButton x:Name="Rb4" Content="Лінкор (4 клітинки)" IsChecked="True" GroupName="Ships" Margin="10,5"/>
+            <RadioButton x:Name="Rb3" Content="Крейсер (3 клітинки)" GroupName="Ships" Margin="10,5"/>
+            <RadioButton x:Name="Rb2" Content="Есмінець (2 клітинки)" GroupName="Ships" Margin="10,5"/>
+            <RadioButton x:Name="Rb1" Content="Катер (1 клітинка)" GroupName="Ships" Margin="10,5"/>
+
+            <TextBlock Text="Орієнтація:" FontSize="16" FontWeight="Bold" Margin="10,20,0,5"/>
+            <!-- Галочка для повороту -->
+            <CheckBox x:Name="ChkHorizontal" Content="Горизонтально" IsChecked="True" Margin="10,5"/>
+        </StackPanel>
+
+        <!-- Дошка Гравця 1 -->
+        <local:BoardView DataContext="{Binding Player1Board}" Grid.Row="0" Grid.Column="1" Margin="20" />
+
+        <!-- Дошка Гравця 2 (пізніше тут буде розстановка бота або мережа) -->
+        <local:BoardView DataContext="{Binding Player2Board}" Grid.Row="0" Grid.Column="2" Margin="20" />
 
         <!-- Кнопка переходу -->
-        <Button Grid.Row="1" Grid.ColumnSpan="2" 
-                Content="ПОЧАТИ БІЙ" 
-                FontSize="24" FontWeight="Bold" Margin="20,10"
-                Click="StartBattle_Click" />
+        <Button x:Name="PlayButton" Grid.Row="1" Grid.ColumnSpan="3" 
+            Content="ПОЧАТИ БІЙ" IsEnabled="False"
+            FontSize="24" FontWeight="Bold" Margin="20,10"
+            Click="StartBattle_Click" />
     </Grid>
 </UserControl>
