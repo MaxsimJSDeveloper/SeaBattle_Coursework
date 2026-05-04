@@ -95,5 +95,60 @@ namespace SeaBattle_Coursework.Models
                 }
             }
         }
+
+        public ShotResult Shoot(int x, int y)
+        {
+            var cell = Grid[x, y];
+
+            if (cell.State == CellState.Hit || cell.State == CellState.Miss)
+                return ShotResult.AlreadyFired;
+
+            if (cell.State == CellState.Ship)
+            {
+                cell.State = CellState.Hit;
+
+                var ship = Ships.FirstOrDefault(s => s.Cells.Contains(cell));
+                if (ship != null)
+                {
+                    ship.Hit();
+                    if (ship.IsSunk)
+                    {
+                        MarkWaterAroundSunkShip(ship); // Магія авто-води!
+                        return ShotResult.Sunk;
+                    }
+                }
+                return ShotResult.Hit;
+            }
+            else
+            {
+                cell.State = CellState.Miss;
+                return ShotResult.Miss;
+            }
+        }
+
+        // Метод, який проходить по всіх клітинках вбитого корабля і ставить "Промахи" навколо
+        private void MarkWaterAroundSunkShip(Ship ship)
+        {
+            foreach (var cell in ship.Cells)
+            {
+                int minX = Math.Max(0, cell.X - 1);
+                int maxX = Math.Min(9, cell.X + 1);
+                int minY = Math.Max(0, cell.Y - 1);
+                int maxY = Math.Min(9, cell.Y + 1);
+
+                for (int x = minX; x <= maxX; x++)
+                {
+                    for (int y = minY; y <= maxY; y++)
+                    {
+                        // Якщо поруч порожньо — автоматично позначаємо як промах (воду)
+                        if (Grid[x, y].State == CellState.Empty)
+                        {
+                            Grid[x, y].State = CellState.Miss;
+                        }
+                    }
+                }
+            }
+        }
+        public bool IsDefeated => Ships.All(s => s.IsSunk);
     }
 }
