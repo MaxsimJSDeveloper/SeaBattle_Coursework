@@ -1,12 +1,32 @@
 ﻿<Window x:Class="SeaBattle_Coursework.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SeaBattle_Coursework"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Морський Бій" Height="600" Width="900" WindowStartupLocation="CenterScreen">
+
     <Grid>
-        <ContentControl x:Name="MainContent" />
+        <Grid.Background>
+            <ImageBrush ImageSource="/Assets/Images/bgImg.jpeg" 
+                        Stretch="UniformToFill" 
+                        Opacity="0.4" />
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Рядок 0: Для меню звуку -->
+            <RowDefinition Height="*"/>
+            <!-- Рядок 1: Для ігрових екранів -->
+        </Grid.RowDefinitions>
+
+        <!-- ПАНЕЛЬ КЕРУВАННЯ ЗВУКОМ (вгорі праворуч) -->
+        <Border Grid.Row="0" HorizontalAlignment="Right" Background="#F0F8FF" Padding="10,5">
+            <StackPanel Orientation="Horizontal">
+                <CheckBox x:Name="ChkMusic" Content="🎵 Музика" IsChecked="True" 
+                          Click="ToggleMusic_Click" Margin="10,0" FontSize="14" FontWeight="SemiBold" Cursor="Hand"/>
+                <CheckBox x:Name="ChkEffects" Content="🔊 Звуки" IsChecked="True" 
+                          Click="ToggleEffects_Click" Margin="10,0" FontSize="14" FontWeight="SemiBold" Cursor="Hand"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ОСНОВНИЙ КОНТЕНТ ГРИ -->
+        <ContentControl x:Name="MainContent" Grid.Row="1" />
     </Grid>
 </Window>

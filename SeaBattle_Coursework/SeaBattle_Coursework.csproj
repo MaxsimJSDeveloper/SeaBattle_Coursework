@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Fonts\RussoOne-Regular.ttf" />
+    <None Remove="Assets\Images\bgImg.jpeg" />
     <None Remove="Assets\Sounds\bg_sounds.mp3" />
     <None Remove="Assets\Sounds\cannon_shot.wav" />
     <None Remove="Assets\Sounds\click.wav" />
@@ -43,8 +45,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Images\" />
-    <Folder Include="Assets\Fonts\" />
+    <Resource Include="Assets\Fonts\RussoOne-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\bgImg.jpeg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

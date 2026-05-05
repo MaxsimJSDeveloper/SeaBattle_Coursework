@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SeaBattle_Coursework.Views"
              xmlns:vm="clr-namespace:SeaBattle_Coursework.ViewModels">
-
-    <!-- Створюємо наш єдиний стан гри саме тут, на етапі розстановки -->
     <UserControl.DataContext>
         <vm:GameViewModel />
     </UserControl.DataContext>
@@ -19,38 +17,29 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
-            <!-- Нова колонка для Арсеналу -->
             <ColumnDefinition Width="*" />
-            <!-- Дошка гравця 1 -->
             <ColumnDefinition Width="*" />
-            <!-- Дошка гравця 2 -->
         </Grid.ColumnDefinitions>
 
-        <!-- ПАНЕЛЬ КОРАБЛІВ (Арсенал) -->
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="20" Background="#F0F8FF">
             <TextBlock Text="ТВІЙ ФЛОТ" FontSize="20" FontWeight="Bold" Margin="10,10,0,10" Foreground="DarkBlue"/>
 
-            <!-- Радіокнопки згруповані через GroupName, щоб можна було обрати лише одну -->
             <RadioButton x:Name="Rb4" Content="Лінкор (4 клітинки)" IsChecked="True" GroupName="Ships" Margin="10,5"/>
             <RadioButton x:Name="Rb3" Content="Крейсер (3 клітинки)" GroupName="Ships" Margin="10,5"/>
             <RadioButton x:Name="Rb2" Content="Есмінець (2 клітинки)" GroupName="Ships" Margin="10,5"/>
             <RadioButton x:Name="Rb1" Content="Катер (1 клітинка)" GroupName="Ships" Margin="10,5"/>
 
             <TextBlock Text="Орієнтація:" FontSize="16" FontWeight="Bold" Margin="10,20,0,5"/>
-            <!-- Галочка для повороту -->
             <CheckBox x:Name="ChkHorizontal" Content="Горизонтально" IsChecked="True" Margin="10,5"/>
         </StackPanel>
 
-        <!-- Дошка Гравця 1 -->
         <local:BoardView DataContext="{Binding Player1Board}" Grid.Row="0" Grid.Column="1" Margin="20" />
-
-        <!-- Дошка Гравця 2 (пізніше тут буде розстановка бота або мережа) -->
         <local:BoardView DataContext="{Binding Player2Board}" Grid.Row="0" Grid.Column="2" Margin="20" />
 
-        <!-- Кнопка переходу -->
         <Button x:Name="PlayButton" Grid.Row="1" Grid.ColumnSpan="3" 
             Content="ПОЧАТИ БІЙ" IsEnabled="False"
             FontSize="24" FontWeight="Bold" Margin="20,10"
-            Click="StartBattle_Click" />
+            Click="StartBattle_Click"
+                FontFamily="/Assets/Fonts/#Russo One"/>
     </Grid>
 </UserControl>

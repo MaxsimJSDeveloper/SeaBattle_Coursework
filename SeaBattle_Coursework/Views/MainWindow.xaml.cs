@@ -1,27 +1,17 @@
-﻿using SeaBattle_Coursework.Views;
-using System.Text;
+﻿using SeaBattle_Coursework.Services;
+using SeaBattle_Coursework.Views;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SeaBattle_Coursework
 {
     public partial class MainWindow : Window
     {
-        //MediaPlayer bgMusic = new MediaPlayer();
-
         public MainWindow()
         {
             InitializeComponent();
 
-            //bgMusic.Open(new Uri("Assets/Sounds/start_menu_music.mp3", UriKind.Relative));
-            //bgMusic.Play();
+            // Вмикаємо музику при старті
+            SoundManager.PlayMusic("start_menu_music.mp3");
 
             MainContent.Content = new MenuView();
         }
@@ -29,6 +19,18 @@ namespace SeaBattle_Coursework
         public void SwitchScreen(object view)
         {
             MainContent.Content = view;
+        }
+
+        // Обробник для галочки "Музика"
+        private void ToggleMusic_Click(object sender, RoutedEventArgs e)
+        {
+            SoundManager.ToggleMusic();
+        }
+
+        // Обробник для галочки "Звуки"
+        private void ToggleEffects_Click(object sender, RoutedEventArgs e)
+        {
+            SoundManager.ToggleEffects();
         }
     }
 }

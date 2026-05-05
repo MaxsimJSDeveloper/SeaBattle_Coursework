@@ -1,8 +1,9 @@
-﻿using System.Windows;
+﻿using SeaBattle_Coursework.Models;
+using SeaBattle_Coursework.Services;
+using SeaBattle_Coursework.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using SeaBattle_Coursework.ViewModels;
-using SeaBattle_Coursework.Models;
 
 namespace SeaBattle_Coursework.Views
 {
@@ -96,7 +97,7 @@ namespace SeaBattle_Coursework.Views
                 {
                     foreach (var c in vm.Player1Board.Cells) c.RefreshView();
                     UpdateFleetUI(board);
-
+                    SoundManager.PlaySound("click.wav");
                     ClearPreview();
                 }
             }
@@ -124,6 +125,7 @@ namespace SeaBattle_Coursework.Views
 
         private void StartBattle_Click(object sender, RoutedEventArgs e)
         {
+            SoundManager.PlayMusic("bg_sounds.mp3");
             var currentGameState = (GameViewModel)this.DataContext;
 
             var botBoard = currentGameState.Player2Board.LogicBoard;

@@ -16,15 +16,18 @@
             <local:BoardView DataContext="{Binding Player2Board}" Grid.Column="1" Margin="20" />
         </Grid>
 
-        <!-- МОДАЛЬНЕ ВІКНО (Спочатку сховане через Visibility="Collapsed") -->
-        <Grid x:Name="GameOverModal" Background="#CC000000" Visibility="Collapsed">
-            <Border Background="White" Width="400" Height="250" CornerRadius="15" 
+        <!-- МОДАЛЬНЕ ВІКНО -->
+        <Grid x:Name="GameOverModal" Background="#B2000B18" Visibility="Collapsed">
+            <Border Background="#F0F8FF" MinWidth="450" MaxWidth="600" Padding="30" 
+                    CornerRadius="15" BorderBrush="#2C3E50" BorderThickness="4"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock x:Name="GameOverText" Text="РЕЗУЛЬТАТ" FontSize="36" FontWeight="Bold" 
-                               HorizontalAlignment="Center" Margin="0,0,0,30" />
-                    <Button Content="В ГОЛОВНЕ МЕНЮ" FontSize="18" FontWeight="SemiBold" 
-                            Width="220" Height="50" Click="BackToMenu_Click"/>
+                    <TextBlock x:Name="GameOverText" TextWrapping="Wrap" TextAlignment="Center" 
+                               FontSize="36" FontFamily="/Assets/Fonts/#Russo One" 
+                               Margin="0,0,0,30" />
+                    <Button Content="В ГОЛОВНЕ МЕНЮ" FontSize="20" FontFamily="/Assets/Fonts/#Russo One" 
+                            Width="250" Height="50" Click="BackToMenu_Click"
+                            Background="#2C3E50" Foreground="White" Cursor="Hand"/>
                 </StackPanel>
             </Border>
         </Grid>
