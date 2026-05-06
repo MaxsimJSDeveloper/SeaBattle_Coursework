@@ -10,7 +10,14 @@
 
   <ItemGroup>
     <None Remove="Assets\Fonts\RussoOne-Regular.ttf" />
+    <None Remove="Assets\Images\battleship.png" />
     <None Remove="Assets\Images\bgImg.jpeg" />
+    <None Remove="Assets\Images\boat.png" />
+    <None Remove="Assets\Images\cruiser.png" />
+    <None Remove="Assets\Images\destroyer.png" />
+    <None Remove="Assets\Images\fire.png" />
+    <None Remove="Assets\Images\miss.png" />
+    <None Remove="Assets\Images\water.png" />
     <None Remove="Assets\Sounds\bg_sounds.mp3" />
     <None Remove="Assets\Sounds\cannon_shot.wav" />
     <None Remove="Assets\Sounds\click.wav" />
@@ -48,9 +55,16 @@
     <Resource Include="Assets\Fonts\RussoOne-Regular.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Images\battleship.png" />
     <Resource Include="Assets\Images\bgImg.jpeg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Images\boat.png" />
+    <Resource Include="Assets\Images\cruiser.png" />
+    <Resource Include="Assets\Images\destroyer.png" />
+    <Resource Include="Assets\Images\fire.png" />
+    <Resource Include="Assets\Images\miss.png" />
+    <Resource Include="Assets\Images\water.png" />
   </ItemGroup>
 
 </Project>

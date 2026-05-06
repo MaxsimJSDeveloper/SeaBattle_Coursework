@@ -17,7 +17,7 @@ namespace SeaBattle_Coursework.ViewModels
             {
                 for (int x = 0; x < 10; x++)
                 {
-                    Cells.Add(new CellViewModel(LogicBoard.Grid[x, y]));
+                    Cells.Add(new CellViewModel(LogicBoard.Grid[x, y], LogicBoard));
                 }
             }
         }
