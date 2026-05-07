@@ -4,30 +4,93 @@
              xmlns:local="clr-namespace:SeaBattle_Coursework.Views"
              xmlns:vm="clr-namespace:SeaBattle_Coursework.ViewModels">
 
-    <Grid>
-        <!-- Твоє існуюче поле бою -->
-        <Grid ButtonBase.Click="Grid_CellClicked">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+    <UserControl.Resources>
+        <Style x:Key="GlassButton" TargetType="Button">
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="/Assets/Fonts/#Russo One"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                CornerRadius="10" BorderBrush="#40FFFFFF" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#34495E"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-            <local:BoardView DataContext="{Binding Player1Board}" Grid.Column="0" Margin="20" />
-            <local:BoardView DataContext="{Binding Player2Board}" Grid.Column="1" Margin="20" />
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource GlassButton}">
+            <Setter Property="Background" Value="#8B0000"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#A52A2A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Button Content="⏸ PAUSE" Grid.Row="0" HorizontalAlignment="Left" Margin="20,20,0,0"
+                    Width="140" Height="40" FontSize="18" Style="{StaticResource GlassButton}" 
+                    Click="PauseButton_Click" />
+
+            <Border Grid.Row="1" Background="#CC111827" BorderBrush="#40FFFFFF" 
+                    BorderThickness="1" CornerRadius="15" Padding="20" Margin="20">
+                <Grid ButtonBase.Click="Grid_CellClicked">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <local:BoardView DataContext="{Binding Player1Board}" Grid.Column="0" Margin="10" />
+                    <local:BoardView DataContext="{Binding Player2Board}" Grid.Column="1" Margin="10" />
+                </Grid>
+            </Border>
         </Grid>
 
-        <!-- МОДАЛЬНЕ ВІКНО -->
-        <Grid x:Name="GameOverModal" Background="#B2000B18" Visibility="Collapsed">
-            <Border Background="#F0F8FF" MinWidth="450" MaxWidth="600" Padding="30" 
-                    CornerRadius="15" BorderBrush="#2C3E50" BorderThickness="4"
+        <Grid x:Name="PauseModal" Background="#B2000B18" Visibility="Collapsed" Panel.ZIndex="10">
+            <Border Background="#CC111827" MinWidth="400" MaxWidth="500" Padding="40" 
+                    CornerRadius="20" BorderBrush="#40FFFFFF" BorderThickness="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="GAME PAUSED" TextAlignment="Center" FontSize="36" 
+                               FontFamily="/Assets/Fonts/#Russo One" Margin="0,0,0,40" Foreground="White"/>
+
+                    <Button Content="RESUME" FontSize="20" Width="250" Height="50" Margin="0,0,0,15" 
+                            Click="ResumeButton_Click" Style="{StaticResource GlassButton}"/>
+
+                    <Button Content="SURRENDER" FontSize="20" Width="250" Height="50" 
+                            Click="BackToMenu_Click" Style="{StaticResource DangerButton}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid x:Name="GameOverModal" Background="#B2000B18" Visibility="Collapsed" Panel.ZIndex="10">
+            <Border Background="#CC111827" MinWidth="450" MaxWidth="600" Padding="40" 
+                    CornerRadius="20" BorderBrush="#40FFFFFF" BorderThickness="1"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock x:Name="GameOverText" TextWrapping="Wrap" TextAlignment="Center" 
                                FontSize="36" FontFamily="/Assets/Fonts/#Russo One" 
-                               Margin="0,0,0,30" />
-                    <Button Content="В ГОЛОВНЕ МЕНЮ" FontSize="20" FontFamily="/Assets/Fonts/#Russo One" 
-                            Width="250" Height="50" Click="BackToMenu_Click"
-                            Background="#2C3E50" Foreground="White" Cursor="Hand"/>
+                               Margin="0,0,0,40" Foreground="White"/>
+
+                    <Button Content="MAIN MENU" FontSize="20" Width="250" Height="50" 
+                            Click="BackToMenu_Click" Style="{StaticResource GlassButton}"/>
                 </StackPanel>
             </Border>
         </Grid>

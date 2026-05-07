@@ -3,43 +3,116 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SeaBattle_Coursework.Views"
              xmlns:vm="clr-namespace:SeaBattle_Coursework.ViewModels">
+
     <UserControl.DataContext>
         <vm:GameViewModel />
     </UserControl.DataContext>
 
+    <UserControl.Resources>
+        <Style x:Key="ShipRadioButton" TargetType="RadioButton">
+            <Setter Property="Margin" Value="0,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Ellipse x:Name="OuterCircle" Stroke="#2C3E50" StrokeThickness="2" Width="16" Height="16" HorizontalAlignment="Left"/>
+                            <Ellipse x:Name="CheckDot" Fill="#2C3E50" Width="8" Height="8" HorizontalAlignment="Left" Margin="4,0,0,0" Visibility="Collapsed"/>
+
+                            <TextBlock Grid.Column="1" 
+                                       Text="{TemplateBinding Content}" 
+                                       TextWrapping="Wrap" 
+                                       VerticalAlignment="Center"
+                                       Margin="5,0,0,0"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckDot" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GlassButton" TargetType="Button">
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="/Assets/Fonts/#Russo One"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="10" BorderBrush="#40FFFFFF" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#34495E"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#BDC3C7"/>
+                                <Setter Property="Foreground" Value="#7F8C8D"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <Grid ButtonBase.Click="Grid_CellClicked"
           Button.MouseEnter="Grid_MouseEnter" 
-      Button.MouseLeave="Grid_MouseLeave"
-      MouseRightButtonDown="Grid_RightClick">
+          Button.MouseLeave="Grid_MouseLeave"
+          MouseRightButtonDown="Grid_RightClick"
+          Margin="20">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="80" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="300" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Margin="20" Background="#F0F8FF">
-            <TextBlock Text="ТВІЙ ФЛОТ" FontSize="20" FontWeight="Bold" Margin="10,10,0,10" Foreground="DarkBlue"/>
+        <Border Grid.Row="0" Grid.Column="0" Background="#CC111827" 
+                BorderBrush="#40FFFFFF" BorderThickness="1" 
+                CornerRadius="15" Padding="15" Margin="0,0,10,0">
 
-            <RadioButton x:Name="Rb4" Content="Лінкор (4 клітинки)" IsChecked="True" GroupName="Ships" Margin="10,5"/>
-            <RadioButton x:Name="Rb3" Content="Крейсер (3 клітинки)" GroupName="Ships" Margin="10,5"/>
-            <RadioButton x:Name="Rb2" Content="Есмінець (2 клітинки)" GroupName="Ships" Margin="10,5"/>
-            <RadioButton x:Name="Rb1" Content="Катер (1 клітинка)" GroupName="Ships" Margin="10,5"/>
+            <Border Background="#F0F8FF" Padding="15" CornerRadius="10">
+                <StackPanel>
+                    <TextBlock Text="ARMORY" FontFamily="/Assets/Fonts/#Russo One" FontSize="20" Margin="0,0,0,15" Foreground="#2C3E50"/>
 
-            <TextBlock Text="Орієнтація:" FontSize="16" FontWeight="Bold" Margin="10,20,0,5"/>
-            <CheckBox x:Name="ChkHorizontal" Content="Горизонтально" IsChecked="True" Margin="10,5"/>
-        </StackPanel>
+                    <RadioButton x:Name="Rb4" Content="Battleship (4) - Left: 1" IsChecked="True" GroupName="Ships" Style="{StaticResource ShipRadioButton}"/>
+                    <RadioButton x:Name="Rb3" Content="Cruiser (3) - Left: 2" GroupName="Ships" Style="{StaticResource ShipRadioButton}"/>
+                    <RadioButton x:Name="Rb2" Content="Destroyer (2) - Left: 3" GroupName="Ships" Style="{StaticResource ShipRadioButton}"/>
+                    <RadioButton x:Name="Rb1" Content="Patrol Boat (1) - Left: 4" GroupName="Ships" Style="{StaticResource ShipRadioButton}"/>
 
-        <local:BoardView DataContext="{Binding Player1Board}" Grid.Row="0" Grid.Column="1" Margin="20" />
-        <local:BoardView DataContext="{Binding Player2Board}" Grid.Row="0" Grid.Column="2" Margin="20" />
+                    <TextBlock Text="Orientation:" FontFamily="/Assets/Fonts/#Russo One" FontSize="16" Margin="0,20,0,10" Foreground="#2C3E50"/>
+                    <CheckBox x:Name="ChkHorizontal" Content="Horizontal" IsChecked="True" Margin="0,5" FontSize="14" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+        </Border>
 
-        <Button x:Name="PlayButton" Grid.Row="1" Grid.ColumnSpan="3" 
-            Content="ПОЧАТИ БІЙ" IsEnabled="False"
-            FontSize="24" FontWeight="Bold" Margin="20,10"
-            Click="StartBattle_Click"
-                FontFamily="/Assets/Fonts/#Russo One"/>
+        <local:BoardView DataContext="{Binding Player1Board}" Grid.Row="0" Grid.Column="1" Margin="10,0,10,0" />
+        <local:BoardView DataContext="{Binding Player2Board}" Grid.Row="0" Grid.Column="2" Margin="10,0,0,0" />
+
+        <Border Grid.Row="1" Grid.ColumnSpan="3" Background="#CC111827" 
+                BorderBrush="#40FFFFFF" BorderThickness="1" 
+                CornerRadius="15" Padding="10" Margin="0,20,0,0">
+
+            <Button x:Name="PlayButton" Content="START BATTLE" IsEnabled="False" 
+                    Style="{StaticResource GlassButton}" Height="50" Click="StartBattle_Click" />
+        </Border>
     </Grid>
 </UserControl>

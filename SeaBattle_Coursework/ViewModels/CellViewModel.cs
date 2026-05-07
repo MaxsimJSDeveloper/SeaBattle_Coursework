@@ -104,7 +104,9 @@ namespace SeaBattle_Coursework.ViewModels
             get
             {
                 var ship = GetMyShip();
-                if (ship == null || ship.Cells.Count <= 1) return 0;
+                if (ship == null) return 0;
+
+                if (ship.Cells.Count == 1) return ship.IsHorizontal ? 0 : 90;
 
                 bool isVertical = ship.Cells[0].X == ship.Cells[1].X;
                 return isVertical ? 90 : 0;

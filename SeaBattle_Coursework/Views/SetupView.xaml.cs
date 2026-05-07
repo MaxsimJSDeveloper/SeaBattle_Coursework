@@ -1,6 +1,8 @@
 ﻿using SeaBattle_Coursework.Models;
 using SeaBattle_Coursework.Services;
 using SeaBattle_Coursework.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,6 +12,7 @@ namespace SeaBattle_Coursework.Views
     public partial class SetupView : UserControl
     {
         private List<CellViewModel> _currentPreview = new List<CellViewModel>();
+
         public SetupView()
         {
             InitializeComponent();
@@ -25,10 +28,10 @@ namespace SeaBattle_Coursework.Views
 
         private void UpdateFleetUI(Board board)
         {
-            Rb4.Content = $"Лінкор (4 кл) - Залишилось: {board.GetRemainingShips(4)}";
-            Rb3.Content = $"Крейсер (3 кл) - Залишилось: {board.GetRemainingShips(3)}";
-            Rb2.Content = $"Есмінець (2 кл) - Залишилось: {board.GetRemainingShips(2)}";
-            Rb1.Content = $"Катер (1 кл) - Залишилось: {board.GetRemainingShips(1)}";
+            Rb4.Content = $"Battleship (4) - Left: {board.GetRemainingShips(4)}";
+            Rb3.Content = $"Cruiser (3) - Left: {board.GetRemainingShips(3)}";
+            Rb2.Content = $"Destroyer (2) - Left: {board.GetRemainingShips(2)}";
+            Rb1.Content = $"Patrol Boat (1) - Left: {board.GetRemainingShips(1)}";
 
             PlayButton.IsEnabled = board.Ships.Count == 10;
         }
@@ -43,6 +46,7 @@ namespace SeaBattle_Coursework.Views
             }
             _currentPreview.Clear();
         }
+
         private void Grid_MouseEnter(object sender, MouseEventArgs e)
         {
             if (e.OriginalSource is Button btn && btn.DataContext is CellViewModel cell)
@@ -93,7 +97,9 @@ namespace SeaBattle_Coursework.Views
                 if (board.GetRemainingShips(size) <= 0) return;
 
                 var newShip = new Ship(size);
-                if (board.PlaceShip(newShip, cell.X, cell.Y, ChkHorizontal.IsChecked == true))
+                newShip.IsHorizontal = ChkHorizontal.IsChecked == true;
+
+                if (board.PlaceShip(newShip, cell.X, cell.Y, newShip.IsHorizontal))
                 {
                     foreach (var c in vm.Player1Board.Cells) c.RefreshView();
                     UpdateFleetUI(board);

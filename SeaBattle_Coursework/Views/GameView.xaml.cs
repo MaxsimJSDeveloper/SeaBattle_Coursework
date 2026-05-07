@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks; // Обов'язково для async/await
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -17,7 +17,8 @@ namespace SeaBattle_Coursework.Views
         private List<Cell> _botTargets = new List<Cell>();
 
         private bool _isGameOver = false;
-        private bool _isBotTurn = false; // Блокуємо UI, поки бот стріляє
+        private bool _isBotTurn = false;
+        private bool _isPaused = false; // Змінна для Паузи
 
         public GameView(GameViewModel gameState)
         {
@@ -25,11 +26,10 @@ namespace SeaBattle_Coursework.Views
             this.DataContext = gameState;
         }
 
-        // Робимо метод async, щоб мати змогу викликати await
         private async void Grid_CellClicked(object sender, RoutedEventArgs e)
         {
-            // Якщо гра закінчена або зараз хід бота — ігноруємо кліки!
-            if (_isGameOver || _isBotTurn) return;
+            // Блокуємо кліки, якщо гра на паузі
+            if (_isGameOver || _isBotTurn || _isPaused) return;
 
             if (e.OriginalSource is Button btn && btn.DataContext is CellViewModel cell)
             {
@@ -39,7 +39,6 @@ namespace SeaBattle_Coursework.Views
                 var result = vm.Player2Board.LogicBoard.Shoot(cell.X, cell.Y);
                 if (result == ShotResult.AlreadyFired) return;
 
-                // Звуки гравця
                 SoundManager.PlaySound("cannon_shot.wav");
                 if (result == ShotResult.Hit) SoundManager.PlaySound("hit.wav");
                 else if (result == ShotResult.Sunk) SoundManager.PlaySound("sunk.wav");
@@ -58,25 +57,27 @@ namespace SeaBattle_Coursework.Views
                     return;
                 }
 
-                // Якщо гравець промахнувся — черга бота
                 if (result == ShotResult.Miss)
                 {
-                    await BotTurnAsync(vm); // Викликаємо асинхронно!
+                    await BotTurnAsync(vm);
                 }
             }
         }
 
-        // Переробили на async Task
         private async Task BotTurnAsync(GameViewModel vm)
         {
-            _isBotTurn = true; // Блокуємо кліки гравця
+            _isBotTurn = true;
             var board = vm.Player1Board.LogicBoard;
             bool keepShooting = true;
 
             while (keepShooting && !_isGameOver)
             {
-                // СИМУЛЯЦІЯ "ДУМАННЯ" БОТА (600 мілісекунд)
+                // Якщо гравець натиснув паузу під час ходу бота - бот чекає
+                while (_isPaused) await Task.Delay(100);
+
                 await Task.Delay(600);
+
+                if (_isPaused) continue; // Перевіряємо ще раз після затримки
 
                 int targetX = -1, targetY = -1;
 
@@ -121,7 +122,6 @@ namespace SeaBattle_Coursework.Views
                 var result = board.Shoot(targetX, targetY);
                 if (result == ShotResult.AlreadyFired) continue;
 
-                // --- ЗВУКИ БОТА ---
                 SoundManager.PlaySound("cannon_shot.wav");
                 if (result == ShotResult.Hit) SoundManager.PlaySound("hit.wav");
                 else if (result == ShotResult.Sunk) SoundManager.PlaySound("sunk.wav");
@@ -144,7 +144,7 @@ namespace SeaBattle_Coursework.Views
                 }
             }
 
-            _isBotTurn = false; // Розблоковуємо UI, хід повертається гравцю
+            _isBotTurn = false;
         }
 
         private void AddBotTargets(int x, int y, Board board)
@@ -176,6 +176,19 @@ namespace SeaBattle_Coursework.Views
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
             mainWindow.SwitchScreen(new MenuView());
+        }
+
+        // --- ЛОГІКА ПАУЗИ ---
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            _isPaused = true;
+            PauseModal.Visibility = Visibility.Visible;
+        }
+
+        private void ResumeButton_Click(object sender, RoutedEventArgs e)
+        {
+            _isPaused = false;
+            PauseModal.Visibility = Visibility.Collapsed;
         }
     }
 }
