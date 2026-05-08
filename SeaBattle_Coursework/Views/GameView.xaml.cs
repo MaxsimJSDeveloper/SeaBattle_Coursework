@@ -2,7 +2,6 @@
 using SeaBattle_Coursework.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace SeaBattle_Coursework.Views
 {
