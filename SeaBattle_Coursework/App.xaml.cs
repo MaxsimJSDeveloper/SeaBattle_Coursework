@@ -1,14 +1,14 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
+using SeaBattle_Coursework.Services;
 
 namespace SeaBattle_Coursework
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        protected override void OnExit(ExitEventArgs e)
+        {
+            SoundManager.DisposeAll();
+            base.OnExit(e);
+        }
     }
-
 }

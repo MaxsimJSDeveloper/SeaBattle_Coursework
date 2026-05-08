@@ -1,20 +1,18 @@
-﻿using System;
-
-namespace SeaBattle_Coursework.Models
+﻿namespace SeaBattle_Coursework.Models
 {
     public class Board
     {
-        private readonly int[] _maxShips = { 0, 4, 3, 2, 1 };
-
+        public int[] _maxShips = { 0, 4, 3, 2, 1 };
+        public const int Size = 10;
         public Cell[,] Grid { get; private set; }
 
         public Board()
         {
-            Grid = new Cell[10, 10];
+            Grid = new Cell[Size, Size];
 
-            for (int x = 0; x < 10; x++)
+            for (int x = 0; x < Size; x++)
             {
-                for (int y = 0; y < 10; y++)
+                for (int y = 0; y < Size; y++)
                 {
                     Grid[x, y] = new Cell(x, y);
                 }
@@ -23,6 +21,11 @@ namespace SeaBattle_Coursework.Models
 
         public int GetRemainingShips(int size)
         {
+            if (size < 1 || size >= _maxShips.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(size), $"Розмір корабля має бути від 1 до {_maxShips.Length - 1}.");
+            }
+
             return _maxShips[size] - Ships.Count(s => s.Size == size);
         }
 
@@ -39,8 +42,8 @@ namespace SeaBattle_Coursework.Models
 
         public bool CanPlaceShip(int startX, int startY, int size, bool isHorizontal)
         {
-            if (isHorizontal && startX + size > 10) return false;
-            if (!isHorizontal && startY + size > 10) return false;
+            if (isHorizontal && startX + size > Size) return false;
+            if (!isHorizontal && startY + size > Size) return false;
 
             int minX = Math.Max(0, startX - 1);
             int maxX = Math.Min(9, isHorizontal ? startX + size : startX + 1);
@@ -76,22 +79,31 @@ namespace SeaBattle_Coursework.Models
             Ships.Add(ship);
             return true;
         }
+
         public void AutoPlaceAllShips()
         {
-            var rand = new Random();
+            Random rand = new Random();
             int[] shipsToPlace = { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
+
+            const int MaxAttempts = 1000;
 
             foreach (int size in shipsToPlace)
             {
                 bool placed = false;
-                while (!placed)
+
+                for (int attempt = 0; attempt < MaxAttempts && !placed; attempt++)
                 {
                     int x = rand.Next(0, 10);
                     int y = rand.Next(0, 10);
-                    bool isHorizontal = rand.Next(0, 2) == 0;
+                    bool isHorizontal = rand.Next(2) == 0;
 
-                    var ship = new Ship(size);
-                    placed = PlaceShip(ship, x, y, isHorizontal);
+                    var newShip = new Ship(size) { IsHorizontal = isHorizontal };
+                    placed = PlaceShip(newShip, x, y, isHorizontal);
+                }
+
+                if (!placed)
+                {
+                    throw new InvalidOperationException($"Critical Error: Could not place ship of size {size} after {MaxAttempts} attempts. The board is blocked.");
                 }
             }
         }
@@ -113,7 +125,7 @@ namespace SeaBattle_Coursework.Models
                     ship.Hit();
                     if (ship.IsSunk)
                     {
-                        MarkWaterAroundSunkShip(ship); // Магія авто-води!
+                        MarkWaterAroundSunkShip(ship);
                         return ShotResult.Sunk;
                     }
                 }
@@ -125,8 +137,6 @@ namespace SeaBattle_Coursework.Models
                 return ShotResult.Miss;
             }
         }
-
-        // Метод, який проходить по всіх клітинках вбитого корабля і ставить "Промахи" навколо
         private void MarkWaterAroundSunkShip(Ship ship)
         {
             foreach (var cell in ship.Cells)
@@ -140,7 +150,6 @@ namespace SeaBattle_Coursework.Models
                 {
                     for (int y = minY; y <= maxY; y++)
                     {
-                        // Якщо поруч порожньо — автоматично позначаємо як промах (воду)
                         if (Grid[x, y].State == CellState.Empty)
                         {
                             Grid[x, y].State = CellState.Miss;

@@ -41,31 +41,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <Style x:Key="GlassButton" TargetType="Button">
-            <Setter Property="Background" Value="#2C3E50"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="/Assets/Fonts/#Russo One"/>
-            <Setter Property="FontSize" Value="24"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="10" BorderBrush="#40FFFFFF" BorderThickness="1">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#34495E"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Background" Value="#BDC3C7"/>
-                                <Setter Property="Foreground" Value="#7F8C8D"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
 
     <Grid ButtonBase.Click="Grid_CellClicked"
@@ -105,7 +80,17 @@
         </Border>
 
         <local:BoardView DataContext="{Binding Player1Board}" Grid.Row="0" Grid.Column="1" Margin="10,0,10,0" />
-        <local:BoardView DataContext="{Binding Player2Board}" Grid.Row="0" Grid.Column="2" Margin="10,0,0,0" />
+        <Grid Grid.Row="0" Grid.Column="2" Margin="10,0,0,0">
+            <local:BoardView DataContext="{Binding Player2Board}" Opacity="0.3" />
+
+            <Border Background="#B2111827" CornerRadius="10" Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="WAITING FOR ENEMY..." 
+                           FontFamily="/Assets/Fonts/#Russo One" 
+                           FontSize="24" 
+                           Foreground="#40FFFFFF" 
+                           TextAlignment="Center"/>
+            </Border>
+        </Grid>
 
         <Border Grid.Row="1" Grid.ColumnSpan="3" Background="#CC111827" 
                 BorderBrush="#40FFFFFF" BorderThickness="1" 

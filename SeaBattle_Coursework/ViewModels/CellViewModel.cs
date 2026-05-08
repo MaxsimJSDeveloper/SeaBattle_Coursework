@@ -1,7 +1,5 @@
-﻿using System;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
@@ -12,8 +10,7 @@ namespace SeaBattle_Coursework.ViewModels
     public class CellViewModel : INotifyPropertyChanged
     {
         public Cell Model { get; }
-        private Board _logicBoard;
-
+        private readonly Board _logicBoard;
         public int X => Model.X;
         public int Y => Model.Y;
 
@@ -21,21 +18,28 @@ namespace SeaBattle_Coursework.ViewModels
         public bool IsHidden
         {
             get => _isHidden;
-            set { _isHidden = value; RefreshView(); }
+            set
+            {
+                if (_isHidden != value)
+                {
+                    _isHidden = value;
+                    OnPropertyChanged(nameof(HasShip));
+                }
+            }
         }
 
         private bool _isPreview;
         public bool IsPreview
         {
             get => _isPreview;
-            set { _isPreview = value; RefreshView(); }
+            set => _isPreview = value; 
         }
 
         private bool _isPreviewInvalid;
         public bool IsPreviewInvalid
         {
             get => _isPreviewInvalid;
-            set { _isPreviewInvalid = value; RefreshView(); }
+            set => _isPreviewInvalid = value;
         }
 
         public CellViewModel(Cell model, Board logicBoard)
@@ -44,14 +48,45 @@ namespace SeaBattle_Coursework.ViewModels
             _logicBoard = logicBoard;
         }
 
-        // ЗАХИСТ ВІД NULL: Перевіряємо, чи існують взагалі кораблі
+        public void SetPreviewState(bool isPreview, bool isInvalid)
+        {
+            _isPreview = isPreview;
+            _isPreviewInvalid = isInvalid;
+            OnPropertyChanged(nameof(PreviewBackground));
+        }
+
+        private Ship? _cachedShip;
+        private int _lastShipCount = -1;
         private Ship? GetMyShip()
         {
             if (_logicBoard == null || _logicBoard.Ships == null) return null;
-            return _logicBoard.Ships.FirstOrDefault(s => s.Cells.Any(c => c.X == X && c.Y == Y));
+
+            if (_lastShipCount != _logicBoard.Ships.Count)
+            {
+                _cachedShip = _logicBoard.Ships.FirstOrDefault(s => s.Cells.Any(c => c.X == X && c.Y == Y));
+                _lastShipCount = _logicBoard.Ships.Count;
+            }
+
+            return _cachedShip;
         }
 
-        // 1. ПОВЕРТАЄМО ГОТОВИЙ ОБ'ЄКТ КАРТИНКИ (Надійна генерація)
+        private static readonly Dictionary<string, BitmapImage> _imageCache = new Dictionary<string, BitmapImage>();
+
+        private static BitmapImage GetCachedImage(string path)
+        {
+            if (_imageCache.TryGetValue(path, out var cachedImage))
+                return cachedImage;
+
+            var bmp = new BitmapImage();
+            bmp.BeginInit();
+            bmp.UriSource = new Uri(path, UriKind.Absolute);
+            bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.EndInit();
+            bmp.Freeze();
+
+            _imageCache[path] = bmp;
+            return bmp;
+        }
         public ImageSource ShipImageSource
         {
             get
@@ -70,14 +105,7 @@ namespace SeaBattle_Coursework.ViewModels
                     };
                 }
 
-                // Генеруємо справжню картинку, яку XAML 100% прочитає
-                var bmp = new BitmapImage();
-                bmp.BeginInit();
-                bmp.UriSource = new Uri(path, UriKind.Absolute);
-                bmp.CacheOption = BitmapCacheOption.OnLoad;
-                bmp.EndInit();
-                bmp.Freeze(); // Захист від витоків пам'яті та помилок потоків
-                return bmp;
+                return GetCachedImage(path);
             }
         }
 
@@ -90,9 +118,8 @@ namespace SeaBattle_Coursework.ViewModels
 
                 var sortedCells = ship.Cells.OrderBy(c => c.X).ThenBy(c => c.Y).ToList();
 
-                // ВИПРАВЛЕНО: Шукаємо за координатами X та Y, а не за посиланням
                 int myIndex = sortedCells.FindIndex(c => c.X == X && c.Y == Y);
-                if (myIndex < 0) myIndex = 0; // Запобіжник від крашу математики
+                if (myIndex < 0) myIndex = 0;
 
                 double pieceWidth = 1.0 / ship.Cells.Count;
                 return new Rect(myIndex * pieceWidth, 0, pieceWidth, 1.0);
@@ -121,10 +148,8 @@ namespace SeaBattle_Coursework.ViewModels
                 return Model.State == CellState.Ship || Model.State == CellState.Hit;
             }
         }
-
         public bool IsMiss => Model.State == CellState.Miss;
         public bool IsHit => Model.State == CellState.Hit;
-
         public Brush PreviewBackground
         {
             get

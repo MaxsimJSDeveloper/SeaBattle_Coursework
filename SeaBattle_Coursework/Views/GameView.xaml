@@ -4,40 +4,6 @@
              xmlns:local="clr-namespace:SeaBattle_Coursework.Views"
              xmlns:vm="clr-namespace:SeaBattle_Coursework.ViewModels">
 
-    <UserControl.Resources>
-        <Style x:Key="GlassButton" TargetType="Button">
-            <Setter Property="Background" Value="#2C3E50"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="/Assets/Fonts/#Russo One"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" 
-                                CornerRadius="10" BorderBrush="#40FFFFFF" BorderThickness="1">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#34495E"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource GlassButton}">
-            <Setter Property="Background" Value="#8B0000"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#A52A2A"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
-
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -80,14 +46,17 @@
             </Border>
         </Grid>
 
-        <Grid x:Name="GameOverModal" Background="#B2000B18" Visibility="Collapsed" Panel.ZIndex="10">
+        <Grid x:Name="GameOverModal" Background="#B2000B18" Visibility="{Binding GameOverVisibility}" Panel.ZIndex="10">
             <Border Background="#CC111827" MinWidth="450" MaxWidth="600" Padding="40" 
                     CornerRadius="20" BorderBrush="#40FFFFFF" BorderThickness="1"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock x:Name="GameOverText" TextWrapping="Wrap" TextAlignment="Center" 
+
+                    <TextBlock Text="{Binding GameOverMessage}" 
+                               Foreground="{Binding GameOverColor}"
+                               TextWrapping="Wrap" TextAlignment="Center" 
                                FontSize="36" FontFamily="/Assets/Fonts/#Russo One" 
-                               Margin="0,0,0,40" Foreground="White"/>
+                               Margin="0,0,0,40" />
 
                     <Button Content="MAIN MENU" FontSize="20" Width="250" Height="50" 
                             Click="BackToMenu_Click" Style="{StaticResource GlassButton}"/>

@@ -4,30 +4,23 @@ using System.Windows;
 
 namespace SeaBattle_Coursework
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INavigationService
     {
         public MainWindow()
         {
             InitializeComponent();
-
-            // Вмикаємо музику при старті
             SoundManager.PlayMusic("start_menu_music.mp3");
-
-            MainContent.Content = new MenuView();
+            NavigateTo(new MenuView(this));
         }
 
-        public void SwitchScreen(object view)
+        public void NavigateTo(object view)
         {
             MainContent.Content = view;
         }
-
-        // Обробник для галочки "Музика"
         private void ToggleMusic_Click(object sender, RoutedEventArgs e)
         {
             SoundManager.ToggleMusic();
         }
-
-        // Обробник для галочки "Звуки"
         private void ToggleEffects_Click(object sender, RoutedEventArgs e)
         {
             SoundManager.ToggleEffects();

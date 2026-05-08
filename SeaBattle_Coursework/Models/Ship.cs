@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SeaBattle_Coursework.Models
+﻿namespace SeaBattle_Coursework.Models
 {
     public class Ship
     {

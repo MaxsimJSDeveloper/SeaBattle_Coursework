@@ -1,8 +1,6 @@
 ﻿using SeaBattle_Coursework.Models;
 using SeaBattle_Coursework.Services;
 using SeaBattle_Coursework.ViewModels;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,10 +10,12 @@ namespace SeaBattle_Coursework.Views
     public partial class SetupView : UserControl
     {
         private List<CellViewModel> _currentPreview = new List<CellViewModel>();
+        private readonly INavigationService _navigationService;
 
-        public SetupView()
+        public SetupView(INavigationService navService)
         {
             InitializeComponent();
+            _navigationService = navService;
         }
 
         private int GetSelectedShipSize()
@@ -25,7 +25,6 @@ namespace SeaBattle_Coursework.Views
             if (Rb2.IsChecked == true) return 2;
             return 1;
         }
-
         private void UpdateFleetUI(Board board)
         {
             Rb4.Content = $"Battleship (4) - Left: {board.GetRemainingShips(4)}";
@@ -35,14 +34,11 @@ namespace SeaBattle_Coursework.Views
 
             PlayButton.IsEnabled = board.Ships.Count == 10;
         }
-
         private void ClearPreview()
         {
             foreach (var c in _currentPreview)
             {
-                c.IsPreview = false;
-                c.IsPreviewInvalid = false;
-                c.RefreshView();
+                c.SetPreviewState(false, false);
             }
             _currentPreview.Clear();
         }
@@ -70,9 +66,7 @@ namespace SeaBattle_Coursework.Views
                     if (x < 10 && y < 10)
                     {
                         var targetCell = vm.Player1Board.Cells.First(c => c.X == x && c.Y == y);
-                        targetCell.IsPreview = isValid;
-                        targetCell.IsPreviewInvalid = !isValid;
-                        targetCell.RefreshView();
+                        targetCell.SetPreviewState(isValid, !isValid);
                         _currentPreview.Add(targetCell);
                     }
                 }
@@ -83,7 +77,6 @@ namespace SeaBattle_Coursework.Views
         {
             ClearPreview();
         }
-
         private void Grid_CellClicked(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource is Button btn && btn.DataContext is CellViewModel cell)
@@ -143,8 +136,7 @@ namespace SeaBattle_Coursework.Views
                 cell.IsHidden = true;
             }
 
-            var mainWindow = (MainWindow)Application.Current.MainWindow;
-            mainWindow.SwitchScreen(new GameView(currentGameState));
+            _navigationService.NavigateTo(new GameView(currentGameState, _navigationService));
         }
     }
 }
