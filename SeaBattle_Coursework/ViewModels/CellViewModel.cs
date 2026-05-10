@@ -13,7 +13,6 @@ namespace SeaBattle_Coursework.ViewModels
         private readonly Board _logicBoard;
         public int X => Model.X;
         public int Y => Model.Y;
-
         private bool _isHidden;
         public bool IsHidden
         {

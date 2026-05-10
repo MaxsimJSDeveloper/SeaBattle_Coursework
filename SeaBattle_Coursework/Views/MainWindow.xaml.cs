@@ -12,7 +12,6 @@ namespace SeaBattle_Coursework
             SoundManager.PlayMusic("start_menu_music.mp3");
             NavigateTo(new MenuView(this));
         }
-
         public void NavigateTo(object view)
         {
             MainContent.Content = view;
